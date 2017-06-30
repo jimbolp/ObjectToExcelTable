@@ -9,53 +9,55 @@ using OfficeOpenXml;
 
 namespace ObjectToExcelTable
 {
-    static class ObjFromXlFile
+    class ObjFromXlFile
     {
-        private static class ColumnName
-        {
-            public const int StoreName = 1;
-            public const int PosCodeName = 2;
-            public const int PalletID = 3;
-            public const int ArticleID = 4;
-            public const int Producer = 5;
-            public const int ArticleName = 6;
-            public const int ParcelNo = 7;
-            public const int ExpiryDate = 8;
-            public const int Qty = 9;
-            public const int QtyFound = 10;
-        }
-        public static PosCodeItemsSql PosCodeFromStream(MemoryStream ms)
-        {
-            PosCodeItemsSql Items = new PosCodeItemsSql(true);
-            //FileInfo fi;
-            //MemoryStream ms;
+        /// <summary>
+        /// Holds the header and index of the columns to map them with the respective properties
+        /// </summary>
+        private Dictionary<string, int> ColumnNumber = new Dictionary<string, int>();
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ms"></param>
+        /// <returns></returns>
+        public List<T> PosCodeFromStream<T>(MemoryStream ms)
+        {
+            //PosCodeItemsSql Items = new PosCodeItemsSql(true);
+            Type t = typeof(T);
+            PropertyInfo[] pInfos = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            
             ExcelPackage ep;
-            //ExcelWorkbook xlWBook;
             ExcelWorksheet xlWsheet;
             try
             {
-                //fi = new FileInfo(path);
                 ep = new ExcelPackage(ms);
-
                 xlWsheet = ep.Workbook.Worksheets.FirstOrDefault();
             }
             catch (Exception)
             {
                 throw;
             }
-            PosCodeItemsSql pcItems;
+            List<T> items = new List<T>();
             try
             {
-                pcItems = TakeRange(xlWsheet);
+                //items = TakeRange<T>(xlWsheet);
             }
             catch(Exception)
             {
                 throw;
             }
-            return pcItems;
+            return items;
         }
-        private static PosCodeItemsSql TakeRange(ExcelWorksheet xlWSheet)
+        private void testReadPropInfo<T>(PropertyInfo pi, T o)
+        {
+            int i = 0;
+            pi.SetValue(o, i);
+        }
+        /*
+        private static List<T> TakeRange<T>(ExcelWorksheet xlWSheet)
         {
             string range = xlWSheet.Dimension.Address;
             ExcelRangeBase er = xlWSheet.Cells[range];
@@ -116,7 +118,7 @@ namespace ObjectToExcelTable
                 }
             }
             return Doc;
-        }
+        }//*/
         private static int? ColumnCheck(PosCodeItemSql item)
         {
             Type t = item.GetType();

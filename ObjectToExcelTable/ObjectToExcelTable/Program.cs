@@ -39,7 +39,8 @@ namespace ObjectToExcelTable
                     /*file.Read(bytes, 0, (int)file.Length);
                     ms.Write(bytes, 0, (int)file.Length);//*/
                     file.CopyTo(ms);
-                    items = ObjFromXlFile.PosCodeFromStream(ms);
+                    ObjFromXlFile objFromF = new ObjFromXlFile();
+                    items.items = objFromF.PosCodeFromStream<PosCodeItemSql>(ms);
                     file.Close();
                     ms.Close();
                 }
