@@ -16,7 +16,7 @@ namespace ObjectToExcelTable
 {
     class Program
     {
-        const string filePath = @"C:\Users\yavor.georgiev\Documents\GitHub\CS-Learning\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\ExcelFile.xlsx";
+        const string filePath = @"C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\ExcelFile.xlsx";
         //public static Dictionary<string, List<string> > LinkedObjHeaderAndContent { get; set; } = new Dictionary<string, List<string> >();
         //public static Dictionary<string, List<string> > LinkedListHeaderAndContent { get; set; } = new Dictionary<string, List<string> >();
         public static void Main(string[] args)
@@ -39,13 +39,13 @@ namespace ObjectToExcelTable
                     /*file.Read(bytes, 0, (int)file.Length);
                     ms.Write(bytes, 0, (int)file.Length);//*/
                     file.CopyTo(ms);
-                    ObjFromXlFile objFromF = new ObjFromXlFile();
-                    items.items = objFromF.PosCodeFromStream<PosCodeItemSql>(ms);
+                    ObjFromXlFile<PosCodeItemSql> objFromF = new ObjFromXlFile<PosCodeItemSql>(new PosCodeItemSql());
+                    items.items = objFromF.PosCodeFromStream(ms);
                     file.Close();
                     ms.Close();
                 }
                     
-                string tempFilePath = @"C:\Users\yavor.georgiev\Documents\GitHub\CS-Learning\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\temp.txt";
+                string tempFilePath = @"C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\temp.txt";
                 //Console.WriteLine(items.Caption);
                 
                 File.WriteAllText(tempFilePath, items.Caption);

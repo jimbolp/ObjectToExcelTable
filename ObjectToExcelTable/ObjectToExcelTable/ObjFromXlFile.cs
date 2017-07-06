@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,13 +10,20 @@ using OfficeOpenXml;
 
 namespace ObjectToExcelTable
 {
-    class ObjFromXlFile
+    class ObjFromXlFile<T>
     {
         /// <summary>
         /// Holds the header and index of the columns to map them with the respective properties
         /// </summary>
         private Dictionary<string, int> ColumnNumber = new Dictionary<string, int>();
 
+        private List<string> NameAttribs = new List<string>();
+        T _value;
+        int? _headerRowNumber = null;
+        public ObjFromXlFile(T obj)
+        {
+            this._value = obj;
+        }
 
         /// <summary>
         /// 
@@ -23,18 +31,32 @@ namespace ObjectToExcelTable
         /// <typeparam name="T"></typeparam>
         /// <param name="ms"></param>
         /// <returns></returns>
-        public List<T> PosCodeFromStream<T>(MemoryStream ms)
+        public List<T> PosCodeFromStream(MemoryStream ms)
         {
             //PosCodeItemsSql Items = new PosCodeItemsSql(true);
             Type t = typeof(T);
             PropertyInfo[] pInfos = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            
+            NameAttribs = GetAttrList(pInfos);
+            if (NameAttribs.Count == 0)
+                return null;
             ExcelPackage ep;
             ExcelWorksheet xlWsheet;
             try
             {
                 ep = new ExcelPackage(ms);
                 xlWsheet = ep.Workbook.Worksheets.FirstOrDefault();
+                foreach(string name in NameAttribs)
+                {
+                    if (_headerRowNumber != null)
+                        break;
+                    _headerRowNumber = GetHeaderRow(xlWsheet, name);
+                }
+                if (!MapColNameAndIdx(xlWsheet))
+                    return null;                
+            }
+            catch (ArgumentNullException)
+            {
+                throw new ArgumentNullException("Файлът е празен!");
             }
             catch (Exception)
             {
@@ -44,6 +66,7 @@ namespace ObjectToExcelTable
             try
             {
                 //items = TakeRange<T>(xlWsheet);
+
             }
             catch(Exception)
             {
@@ -51,17 +74,81 @@ namespace ObjectToExcelTable
             }
             return items;
         }
-        private void testReadPropInfo<T>(PropertyInfo pi, T o)
+        private List<string> GetAttrList(PropertyInfo[] pInfos)
         {
-            int i = 0;
-            pi.SetValue(o, i);
+            List<DisplayNameAttribute> attributes = new List<DisplayNameAttribute>();
+            foreach(PropertyInfo pi in pInfos)
+            {
+                if (HasNameAttr(pi.GetCustomAttributes()))
+                    attributes.Add(pi.GetCustomAttribute<DisplayNameAttribute>());
+            }
+            if(attributes.Count != 0)
+            {
+                List<string> temp = new List<string>();
+                foreach(var a in attributes)
+                {
+                    temp.Add(a.DisplayName);
+                }
+                return temp;
+            }
+            else
+            {
+                return new List<string>();
+            }
+        }
+        private bool MapColNameAndIdx(ExcelWorksheet ws)
+        {
+            if (_headerRowNumber == null || NameAttribs.Count == 0)
+                return false;
+            ExcelRangeBase range = ws.Cells[ws.Dimension.Address];
+
+            foreach(string attrName in NameAttribs)
+            {
+                for (int col = 1; col <= range.Columns; ++col)
+                {
+                    if (attrName == ws.Cells[_headerRowNumber.Value, col].Value.ToString())
+                    {
+                        if (!ColumnNumber.Keys.Any(k => k == attrName))
+                            ColumnNumber[attrName] = col;
+                    }
+                }
+            }
+            return true;
+        }
+        private bool HasNameAttr(IEnumerable<object> objs)
+        {
+            foreach(object o in objs)
+            {
+                if (o is DisplayNameAttribute)
+                    return true;
+            }
+            return false;
+        }
+        private int? GetHeaderRow(ExcelWorksheet ws, string columnName)
+        {
+            ExcelRangeBase range = ws.Cells[ws.Dimension.Address];
+            if(range == null)
+                return null;
+            for(int i = 1; i <= range.Rows; ++i)
+            {
+                for(int j = 1; j <= range.Columns; ++j)
+                {
+                    string _cellValue = "";
+                    if (ws.Cells[i, j].Value != null)
+                        _cellValue = ws.Cells[i, j].Value.ToString();
+                    //else continue;
+                    if (_cellValue.Trim() == columnName.Trim())
+                        return i;
+                }
+            }
+            return null;
         }
         /*
-        private static List<T> TakeRange<T>(ExcelWorksheet xlWSheet)
+        private List<T> TakeRange(ExcelWorksheet xlWSheet)
         {
             string range = xlWSheet.Dimension.Address;
             ExcelRangeBase er = xlWSheet.Cells[range];
-            int startRow = 4;
+            int startRow = _headerRowNumber.Value + 1;
             int endRow = er.Rows;
 
             PosCodeItemsSql Doc = new PosCodeItemsSql(true);
