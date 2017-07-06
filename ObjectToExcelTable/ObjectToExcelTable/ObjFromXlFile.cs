@@ -65,7 +65,7 @@ namespace ObjectToExcelTable
             List<T> items = new List<T>();
             try
             {
-                //items = TakeRange<T>(xlWsheet);
+                items = TakeRange(xlWsheet);
 
             }
             catch(Exception)
@@ -139,6 +139,55 @@ namespace ObjectToExcelTable
                     //else continue;
                     if (_cellValue.Trim() == columnName.Trim())
                         return i;
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// This is a MESSSSS!!!!!!!!!
+        /// </summary>
+        /// <param name="pInfo"></param>
+        /// <param name="colName"></param>
+        /// <param name="cellValue"></param>
+        /// <returns></returns>
+        private PropertyInfo FillTheList(PropertyInfo pInfo, string colName, object cellValue)
+        {
+            Type t = this._value.GetType();
+            PropertyInfo[] pInfos = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            foreach(PropertyInfo pi in pInfos)
+            {
+                if (HasNameAttr(pi.GetCustomAttributes()))
+                {
+                    string col = pi.GetCustomAttribute<DisplayNameAttribute>().DisplayName;
+                    if (ColumnNumber.Keys.Any(k => k == col))
+                    {
+                        try
+                        {
+                            pi.SetValue(_value, cellValue);
+                        }
+                        catch (Exception e)
+                        {
+                            throw e;
+                        }
+                    }
+                }
+            }
+            return _value;
+
+        }
+        private List<T> TakeRange(ExcelWorksheet xlWSheet)
+        {
+            string range = xlWSheet.Dimension.Address;
+            ExcelRangeBase er = xlWSheet.Cells[range];
+            int startRow = _headerRowNumber.Value + 1;
+            int endRow = er.Rows;
+            List<T> listT = new List<T>();
+            for (int i = startRow; i <= endRow; ++i)
+            {
+                T tempObj = Activator.CreateInstance(typeof(T),)
+                foreach(var d in ColumnNumber)
+                {
+                    //listT.Add(FillTheList(d.Key, xlWSheet.Cells[i, d.Value].Value));
                 }
             }
             return null;
