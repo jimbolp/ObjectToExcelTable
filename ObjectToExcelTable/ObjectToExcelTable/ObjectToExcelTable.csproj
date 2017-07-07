@@ -59,7 +59,6 @@
   <ItemGroup>
     <Compile Include="ObjFromXlFile.cs" />
     <Compile Include="PackingList.cs" />
-    <Compile Include="ParameterNotValidException.cs" />
     <Compile Include="PosCodeItemsSql.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,26 +18,27 @@ namespace ObjectToExcelTable
         private Dictionary<string, int> ColumnNumber = new Dictionary<string, int>();
 
         private List<string> NameAttribs = new List<string>();
-        
+        T _value;
         int? _headerRowNumber = null;
-        
+        public ObjFromXlFile(T obj)
+        {
+            this._value = obj;
+        }
 
         /// <summary>
-        /// Opens Excel file from memorystream and returns the rows as object from the requested Type 
-        /// if the columns match with the properties of the Type
+        /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="ms"></param>
         /// <returns></returns>
         public List<T> PosCodeFromStream(MemoryStream ms)
-        {            
-            Type t = typeof(T);            
+        {
+            //PosCodeItemsSql Items = new PosCodeItemsSql(true);
+            Type t = typeof(T);
             PropertyInfo[] pInfos = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            
-            NameAttribs = GetAttrList(pInfos); //Get collection of the DisplayName attributes as string
+            NameAttribs = GetAttrList(pInfos);
             if (NameAttribs.Count == 0)
                 return null;
-
             ExcelPackage ep;
             ExcelWorksheet xlWsheet;
             try
@@ -73,11 +74,6 @@ namespace ObjectToExcelTable
             }
             return items;
         }
-        /// <summary>
-        /// Check each property for DisplayNameAttribute and return list of the DisplayNames
-        /// </summary>
-        /// <param name="pInfos"></param>
-        /// <returns></returns>
         private List<string> GetAttrList(PropertyInfo[] pInfos)
         {
             List<DisplayNameAttribute> attributes = new List<DisplayNameAttribute>();
@@ -119,15 +115,8 @@ namespace ObjectToExcelTable
             }
             return true;
         }
-        /// <summary>
-        /// Check if there are any DisplayName Attributes
-        /// </summary>
-        /// <param name="objs"></param>
-        /// <returns></returns>
         private bool HasNameAttr(IEnumerable<object> objs)
         {
-            if (objs == null || objs.Count() == 0)
-                return false;
             foreach(object o in objs)
             {
                 if (o is DisplayNameAttribute)
@@ -171,7 +160,7 @@ namespace ObjectToExcelTable
                     {
                         PropertyInfo pi = GetPropertyInfoFromName(d.Key, tempObj);
                         Type t = pi.PropertyType;
-                        if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(System.Nullable<>))
+                        if (t.IsAssignableFrom(typeof(System.Nullable<>)))
                         {
                             t = Nullable.GetUnderlyingType(t);
                         }
@@ -183,10 +172,12 @@ namespace ObjectToExcelTable
                             case TypeCode.Empty:
                                 break;
                             case TypeCode.Int32:
-                                int pInt = 0;
-                                if (int.TryParse(xlWSheet.Cells[i, d.Value].Value.ToString(), out pInt))
                                 {
-                                    pi.SetValue(tempObj, pInt);
+                                    int pInt = 0;
+                                    if (int.TryParse(xlWSheet.Cells[i, d.Value].Value.ToString(), out pInt))
+                                    {
+                                        pi.SetValue(tempObj, pInt);
+                                    }
                                 }
                                 break;
                             case TypeCode.DateTime:
@@ -212,7 +203,7 @@ namespace ObjectToExcelTable
                                 break;
                             case TypeCode.Object:
                                 {
-                                    //TODO...
+
                                 }
                                 break;
                             default:
@@ -221,7 +212,7 @@ namespace ObjectToExcelTable
                                               
                         //listT.Add(FillTheList(d.Key, xlWSheet.Cells[i, d.Value].Value));
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
                         continue;
                     }

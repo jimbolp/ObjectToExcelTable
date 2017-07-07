@@ -39,10 +39,9 @@ namespace ObjectToExcelTable
                     /*file.Read(bytes, 0, (int)file.Length);
                     ms.Write(bytes, 0, (int)file.Length);//*/
                     file.CopyTo(ms);
-                    ObjFromXlFile<PosCodeItemSql> objFromF = new ObjFromXlFile<PosCodeItemSql>(new PosCodeItemSql());
+                    ObjFromXlFile<PosCodeItemSql> objFromF = new ObjFromXlFile<PosCodeItemSql>();
                     items.items = objFromF.PosCodeFromStream(ms);
-                    file.Close();
-                    ms.Close();
+                    
                 }
                     
                 string tempFilePath = @"C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\temp.txt";

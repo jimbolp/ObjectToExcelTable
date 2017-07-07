@@ -26,9 +26,9 @@ namespace ObjectToExcelTable
             {
                 GetPropertiesOneByOne(o);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw;
             }
         }
 
@@ -36,7 +36,7 @@ namespace ObjectToExcelTable
         {
             Type t = o.GetType();
 
-            if (typeof(IEnumerable).IsAssignableFrom(o.GetType()) && !(o is String))
+            if (typeof(IEnumerable).IsAssignableFrom(o.GetType()) && !(o is string))
             {
                 throw new Exception("The given parameter cannot be of type" + o.GetType());
                 /*foreach (var item in (IEnumerable)o)
