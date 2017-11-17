@@ -21,6 +21,13 @@ namespace ObjectToExcelTable
         
         int? _headerRowNumber = null;
         
+        public ObjFromXlFile()
+        {
+            Type t = typeof(T);
+            PropertyInfo[] pInfos = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+            NameAttribs = GetAttrList(pInfos); //Get collection of the DisplayName attributes as string
+        }
 
         /// <summary>
         /// Opens Excel file from memorystream and returns the rows as object from the requested Type 
@@ -30,11 +37,7 @@ namespace ObjectToExcelTable
         /// <param name="ms"></param>
         /// <returns></returns>
         public List<T> PosCodeFromStream(MemoryStream ms)
-        {            
-            Type t = typeof(T);            
-            PropertyInfo[] pInfos = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            
-            NameAttribs = GetAttrList(pInfos); //Get collection of the DisplayName attributes as string
+        {
             if (NameAttribs.Count == 0)
                 return null;
 
@@ -165,7 +168,7 @@ namespace ObjectToExcelTable
             for (int i = startRow; i <= endRow; ++i)
             {
                 T tempObj = new T();
-                foreach(var d in ColumnNumber)
+                foreach(KeyValuePair<string, int> d in ColumnNumber)
                 {
                     try
                     {

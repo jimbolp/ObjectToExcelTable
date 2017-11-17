@@ -30,6 +30,12 @@ namespace ObjectToExcelTable
 
     public class PosCodeItemSql
     {
+        [DisplayName("Приложение номер")]
+        public int? AppID { get; set; } = null;
+
+        [DisplayName("Приложение име")]
+        public string AppName { get; set; } = null;
+
         [DisplayName("Склад")]
         public string StoreName { get; set; } = null;
 

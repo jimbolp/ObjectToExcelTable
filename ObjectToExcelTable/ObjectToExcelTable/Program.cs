@@ -25,23 +25,14 @@ namespace ObjectToExcelTable
             try
             {
                 using (MemoryStream ms = new MemoryStream())
-                using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
-                    byte[] bytes = new byte[file.Length];
-                    unsafe
+                    using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                     {
-                        fixed(byte* p = bytes)
-                        {
-                            Console.WriteLine(*p);
-                        }
+                        file.CopyTo(ms);
+                        ObjFromXlFile<PosCodeItemSql> objFromF = new ObjFromXlFile<PosCodeItemSql>();
+                        items.items = objFromF.PosCodeFromStream(ms);
+
                     }
-                    //IntPtr p = bytes;
-                    /*file.Read(bytes, 0, (int)file.Length);
-                    ms.Write(bytes, 0, (int)file.Length);//*/
-                    file.CopyTo(ms);
-                    ObjFromXlFile<PosCodeItemSql> objFromF = new ObjFromXlFile<PosCodeItemSql>();
-                    items.items = objFromF.PosCodeFromStream(ms);
-                    
                 }
                     
                 string tempFilePath = @"C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\temp.txt";
