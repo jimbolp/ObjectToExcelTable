@@ -16,11 +16,10 @@ namespace ObjectToExcelTable
         /// Holds the header and index of the columns to map them with the respective properties
         /// </summary>
         private Dictionary<string, int> ColumnNumber = new Dictionary<string, int>();
-
-        private List<string> NameAttribs = new List<string>();
-        
+        private List<string> NameAttribs = new List<string>();        
         int? _headerRowNumber = null;
         
+
         public ObjFromXlFile()
         {
             Type t = typeof(T);
@@ -47,6 +46,7 @@ namespace ObjectToExcelTable
             {
                 ep = new ExcelPackage(ms);
                 xlWsheet = ep.Workbook.Worksheets.FirstOrDefault();
+                _headerRowNumber = null;
                 foreach(string name in NameAttribs)
                 {
                     if (_headerRowNumber != null)
@@ -138,6 +138,7 @@ namespace ObjectToExcelTable
             }
             return false;
         }
+
         private int? GetHeaderRow(ExcelWorksheet ws, string columnName)
         {
             ExcelRangeBase range = ws.Cells[ws.Dimension.Address];

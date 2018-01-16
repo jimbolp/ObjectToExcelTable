@@ -28,3 +28,14 @@ C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\O
 C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\EPPlus.dll
 C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\EPPlus.xml
 C:\Users\yavor.georgiev\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\obj\Debug\ObjectToExcelTable.csprojResolveAssemblyReference.cache
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\ObjectToExcelTable.exe.config
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\ObjectToExcelTable.exe
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\ObjectToExcelTable.pdb
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\DocumentFormat.OpenXml.dll
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\EPPlus.dll
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\bin\Debug\EPPlus.xml
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\obj\Debug\ObjectToExcelTable.csprojResolveAssemblyReference.cache
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\obj\Debug\ObjectToExcelTable.csproj.ResolveComReference.cache
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\obj\Debug\ObjectToExcelTable.csproj.CoreCompileInputs.cache
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\obj\Debug\ObjectToExcelTable.exe
+D:\Documents\GitHub\ObjectToExcelTable\ObjectToExcelTable\ObjectToExcelTable\obj\Debug\ObjectToExcelTable.pdb
